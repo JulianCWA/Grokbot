@@ -1,0 +1,9 @@
+Metric Name,Metric Code,Syntax,,
+Accounts,account,,,"YCU(""account"")"
+Clients,client,,,"YCU(""client"")"
+Groups,group,,,"YCU(""group"")"
+Holdings,holding,,,"YCU(""holding"")"
+Holding Lots,holding_lot,,,"YCU(""holding_lot"")"
+Related Securities,related_securities,,,"YCU(""related_securities"")"
+Transactions,transaction,,,"YCU(""transaction"")"
+Watchlist,watchlist,,,"YCU(""watchlist"")"
