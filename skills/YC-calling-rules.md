@@ -5,7 +5,7 @@ Apply these rules whenever you build a YCharts Excel formula or clone it as a Py
 
 Required inputs and access:
 - Ticker and the appropriate metric / info / holdings field.
-- Live API key required only for actual API calls (never store, print, or log it).
+- Load the API key from the location specified in the Bot’s standing instructions (e.g. a file on the Bot’s computer). Never hard-code, print, log, or include the key in any response or file you write.
 
 Sequence of work:
 1. Format the ticker with YCprefixes (or the rules below).
