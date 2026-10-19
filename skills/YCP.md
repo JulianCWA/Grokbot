@@ -1,45 +1,52 @@
 # YCP
 
 When to use it:
-Use this to pull a single quantitative data point (latest or as-of a specific date) for a security using the YCharts Excel YCP function.
+Pull one quantitative data point (latest or as-of a date) — either as an Excel YCP formula or the matching API call.
 
 Required inputs and access:
-- Ticker (apply YCprefixes rules first if needed)
-- Metric / Calc code (required; never invent one)
-- Optional: date, retrieve date flag, transpose, fill null value
-- No external connectors required for writing the formula; user must have YCharts Excel Add-In installed to evaluate it.
+- Ticker (apply YCprefixes / YC-calling-rules)
+- Metric / calc (required except for macro I: — leave blank)
+- Optional: date, retrieve date, transpose, fill null
 
 Sequence of work:
-1. Confirm or format the ticker using the YCprefixes skill/rules.
-2. Confirm the metric/calc code (ask if unclear or not provided).
-3. Build the YCP formula with the required arguments and any optionals the user specified.
-4. Return the formula ready to paste into Excel, plus a one-line explanation of what it pulls.
+1. Apply YCprefixes and YC-calling-rules.
+2. Build the formula or API request.
+3. Return it with a short description and any error/null note.
 
-Formula syntax:
+Excel formula:
 =YCP(ticker, calc, [date], [retrieve_date], [transpose], [fill_null])
-- ticker: string (required)
-- calc: string metric code (required)
-- date: optional date or relative (e.g. -1 for previous)
-- retrieve_date: "Y" to also return the date
-- transpose: "Y" to switch orientation
-- fill_null: value to show instead of null/blank
+
+Parameters:
+- ticker: required, correctly prefixed
+- calc: required (blank for I:)
+- date: optional; blank = most recent
+- retrieve_date: "Y" to also return the date (spills two cells)
+- transpose: "Y"
+- fill_null: quoted value (e.g. "N/A") to replace ERR: NO DATA
+
+API:
+POST /v3/excel/points
+data = {"points": "TICKER,metric"} or {"points": "TICKER,metric,YYYY-MM-DD"}
+# Mutual fund: "M:TICKER,metric"
+# Macro: "I:CODE,"
+
+Response (verified):
+results[metric]["" or date]["results"] = [value_date, value]
+or [null, null]
+
+Examples:
+=YCP("MSFT","price")
+=YCP("M:MEIIX","total_monthly_return")
+=YCP("I:USGDP")
+=YCP("MTUM","price","2024-12-31",,,"N/A")
 
 Rules:
-- Always apply ticker prefixes from YCprefixes before writing the formula.
-- Never invent or guess a metric/calc code. If the user does not provide one, ask for it or point them to the YCharts metric reference.
-- Prefer the official YCharts formula builder style when possible.
-- If the user wants a series of dates or multiple points, recommend YCS instead.
-
-How to validate the result:
-- Formula starts with =YCP(
-- Ticker is correctly prefixed
-- Calc is present and not blank
-- Optional arguments only included if requested
+- Follow YC-calling-rules for prefixes, blank metric, null vs Calc Not Found vs INVALID COMPANY, fill null, and decimals.
+- If the user wants a series, recommend YCS.
 
 What to return:
-- The complete Excel formula
-- One short line describing what data it returns
-- Any clarifying question if ticker or metric is missing
+- The complete formula or points string / Python snippet.
+- One short line describing the result or expected null/error.
 
 What requires approval:
-- Nothing for drafting the formula. Do not modify Excel files or run macros unless the user explicitly asks in the same message.
+- Nothing for drafting. Execute only if the user explicitly asks.
